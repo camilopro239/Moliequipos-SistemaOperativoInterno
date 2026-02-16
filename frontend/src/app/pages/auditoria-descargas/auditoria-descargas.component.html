@@ -1,0 +1,128 @@
+﻿<div class="page">
+  <div class="page-header">
+    <div class="page-header-left">
+      <button type="button" class="btn-retorno" (click)="retornar()">
+        Retornar
+      </button>
+      <h2>Auditoria de descargas</h2>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Filtros</h3>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Empleado</label>
+        <select
+          [(ngModel)]="filtroEmpleadoId"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <option value="">Todos</option>
+          <option *ngFor="let emp of empleados" [value]="emp.id">
+            {{ emp.nombre }} - {{ emp.cedula }}
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Tipo documento</label>
+        <select
+          [(ngModel)]="filtroTipoDocumento"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <option value="">Todos</option>
+          <option value="contrato">Contrato</option>
+          <option value="incapacidad">Incapacidad</option>
+          <option value="colilla">Colilla</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Fecha desde</label>
+        <input
+          type="date"
+          [(ngModel)]="filtroFechaDesde"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
+
+      <div class="field">
+        <label>Fecha hasta</label>
+        <input
+          type="date"
+          [(ngModel)]="filtroFechaHasta"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
+
+      <div class="field">
+        <label>Limite</label>
+        <select
+          [(ngModel)]="filtroLimite"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="500">500</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="button" (click)="aplicarFiltros()">
+          Aplicar filtros
+        </button>
+        <button class="secondary" type="button" (click)="limpiarFiltros()">
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Eventos de descarga</h3>
+
+    <p *ngIf="loading">Cargando auditoria...</p>
+
+    <div class="table-wrapper" *ngIf="!loading && registros.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Empleado</th>
+            <th>Tipo</th>
+            <th>Archivo</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of registros">
+            <td>{{ item.fecha_descarga | date:'short' }}</td>
+            <td>
+              <div>{{ item.usuario_nombre }}</div>
+              <small>{{ item.usuario_email }} ({{ item.usuario_rol }})</small>
+            </td>
+            <td>
+              <div>{{ item.empleado_nombre }}</div>
+              <small>{{ item.empleado_cedula }}</small>
+            </td>
+            <td class="capitalize">{{ item.tipo_documento }}</td>
+            <td>
+              <span [title]="item.user_agent || ''">{{ item.nombre_archivo }}</span>
+              <small *ngIf="item.periodo">Periodo: {{ item.periodo }}</small>
+            </td>
+            <td>{{ item.ip || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p *ngIf="!loading && !registros.length">No hay eventos de descarga para los filtros aplicados.</p>
+  </div>
+</div>

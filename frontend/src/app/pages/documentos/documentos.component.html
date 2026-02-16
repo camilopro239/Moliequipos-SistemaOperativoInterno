@@ -1,0 +1,113 @@
+﻿<div class="page">
+  <div class="page-header">
+    <div class="page-header-left">
+      <button type="button" class="btn-retorno" (click)="retornar()">
+        Retornar
+      </button>
+      <h2>Documentos de empleados</h2>
+    </div>
+  </div>
+
+  <p class="permiso-info" *ngIf="!esPrivilegiado">
+    Mostrando tus colillas de pago. Solo puedes ver y descargar documentos de tu propio perfil.
+  </p>
+
+  <div class="panel" *ngIf="esPrivilegiado">
+    <h3>Subir documento</h3>
+
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="subirDocumento()">
+      <div class="field">
+        <label>Empleado</label>
+        <select formControlName="empleado_id">
+          <option [ngValue]="null" disabled>Selecciona un empleado</option>
+          <option *ngFor="let emp of empleados" [ngValue]="emp.id">
+            {{ emp.nombre }} - {{ emp.cedula }}
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Tipo</label>
+        <select formControlName="tipo">
+          <option value="contrato">Contrato</option>
+          <option value="incapacidad">Incapacidad</option>
+          <option value="colilla">Colilla</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Periodo (opcional)</label>
+        <input type="text" formControlName="periodo" placeholder="Ej: 2026-02" />
+      </div>
+
+      <div class="field">
+        <label>Archivo</label>
+        <input type="file" (change)="onArchivoSeleccionado($event)" />
+        <small *ngIf="archivoSeleccionado">{{ archivoSeleccionado.name }}</small>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="submit" [disabled]="subiendo || form.invalid">
+          {{ subiendo ? 'Subiendo...' : 'Subir documento' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Listado de documentos</h3>
+
+      <select
+        *ngIf="esPrivilegiado"
+        [(ngModel)]="filtroEmpleadoId"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="cargarDocumentos()"
+      >
+        <option value="">Todos los empleados</option>
+        <option *ngFor="let emp of empleados" [value]="emp.id">
+          {{ emp.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <p *ngIf="loading">Cargando documentos...</p>
+
+    <div class="table-wrapper" *ngIf="!loading && documentos.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th>Tipo</th>
+            <th>Archivo</th>
+            <th>Periodo</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let doc of documentos">
+            <td>{{ doc.empleado_nombre }}</td>
+            <td class="capitalize">{{ doc.tipo }}</td>
+            <td>{{ doc.nombre_archivo }}</td>
+            <td>{{ doc.periodo || '-' }}</td>
+            <td>{{ doc.fecha_subida | date:'short' }}</td>
+            <td class="acciones">
+              <button type="button" class="secondary" (click)="descargarDocumento(doc)">
+                Descargar
+              </button>
+              <button *ngIf="esPrivilegiado" type="button" class="btn-eliminar" (click)="eliminarDocumento(doc)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p *ngIf="!loading && !documentos.length">No hay documentos registrados.</p>
+  </div>
+</div>
+

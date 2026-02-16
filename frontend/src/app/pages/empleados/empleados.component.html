@@ -1,0 +1,147 @@
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-left">
+      <button type="button" class="btn-retorno" (click)="retornar()">
+        Retornar
+      </button>
+      <h2>Empleados</h2>
+    </div>
+    <button class="primary" (click)="openModalCrear()">+ Nuevo empleado</button>
+  </div>
+
+  <div class="filtros">
+    <input
+      type="text"
+      placeholder="Buscar por nombre, cedula, cargo o correo"
+      [(ngModel)]="filtroTexto"
+      [ngModelOptions]="{ standalone: true }"
+    />
+
+    <select
+      [(ngModel)]="filtroEstado"
+      [ngModelOptions]="{ standalone: true }"
+    >
+      <option value="todos">Todos los estados</option>
+      <option value="activo">Activos</option>
+      <option value="inactivo">Inactivos</option>
+    </select>
+
+    <button
+      type="button"
+      class="secondary"
+      (click)="limpiarFiltros()"
+    >
+      Limpiar
+    </button>
+  </div>
+
+  <p *ngIf="loading">Cargando empleados...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="table-wrapper" *ngIf="!loading && empleadosFiltrados.length">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cedula</th>
+          <th>Cargo</th>
+          <th>Correo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let emp of empleadosFiltrados">
+          <td>{{ emp.nombre }}</td>
+          <td>{{ emp.cedula }}</td>
+          <td>{{ emp.cargo || '-' }}</td>
+          <td>{{ emp.correo || '-' }}</td>
+          <td>
+            <span class="badge" [class.activo]="emp.estado === 'activo'">
+              {{ emp.estado }}
+            </span>
+          </td>
+          <td class="acciones">
+            <button class="btn-documentos" (click)="verDocumentos(emp)">Documentos</button>
+            <button class="secondary" (click)="openModalEditar(emp)">Editar</button>
+            <button class="btn-eliminar" (click)="confirmarEliminar(emp)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="!loading && !empleados.length">
+    No hay empleados registrados.
+  </p>
+
+  <p *ngIf="!loading && empleados.length && !empleadosFiltrados.length">
+    No se encontraron empleados con esos filtros.
+  </p>
+</div>
+
+<div class="modal-backdrop" *ngIf="showModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>{{ modoEdicion ? 'Editar empleado' : 'Nuevo empleado' }}</h3>
+      <button class="close" type="button" (click)="closeModal()">x</button>
+    </div>
+
+    <form
+      class="modal-body"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+      <div class="field">
+        <label>Nombre</label>
+        <input
+          type="text"
+          placeholder="Nombre completo"
+          formControlName="nombre"
+        />
+      </div>
+
+      <div class="field">
+        <label>Cedula</label>
+        <input type="text" formControlName="cedula" />
+      </div>
+
+      <div class="field">
+        <label>Cargo</label>
+        <input type="text" formControlName="cargo" />
+      </div>
+
+      <div class="field">
+        <label>Correo</label>
+        <input type="email" formControlName="correo" />
+      </div>
+
+      <div class="field">
+        <label>Estado</label>
+        <select formControlName="estado">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="secondary"
+          (click)="closeModal()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="primary"
+          [disabled]="form.invalid || loading"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

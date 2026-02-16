@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+  --brand-yellow: #f7db21;
+  --brand-yellow-strong: #ffd700;
+  --brand-dark: #111111;
+  --brand-dark-soft: #1c1c1c;
+  --surface: #ffffff;
+  --surface-soft: #f7f7f2;
+  --border: #dbdbd3;
+  --text: #202020;
+  --text-soft: #6b6b66;
+  --danger: #cf2b2b;
+  --success: #11874e;
+  --font-head: 'Rajdhani', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --shadow-lg: 0 24px 40px rgba(17, 17, 17, 0.14);
+  --shadow-sm: 0 10px 20px rgba(17, 17, 17, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: radial-gradient(circle at 20% -20%, #fff8b3 0%, #f6f6ef 36%, #efefe9 100%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -35deg,
+    rgba(17, 17, 17, 0.03) 0,
+    rgba(17, 17, 17, 0.03) 1px,
+    transparent 1px,
+    transparent 16px
+  );
+  opacity: 0.28;
+  z-index: -1;
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-head);
+  letter-spacing: 0.02em;
+}
+
+p {
+  margin: 0;
+}
+
+input,
+select,
+button,
+textarea {
+  font-family: var(--font-body);
+}
+
+button {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(247, 219, 33, 0.55);
+  outline-offset: 1px;
+}
+
+::selection {
+  background: rgba(247, 219, 33, 0.55);
+  color: #111;
+}

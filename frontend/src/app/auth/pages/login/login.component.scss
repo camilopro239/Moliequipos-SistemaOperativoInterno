@@ -1,0 +1,143 @@
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.login-card {
+  width: min(920px, 100%);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  display: grid;
+  grid-template-columns: 38% minmax(0, 1fr);
+}
+
+.brand-panel {
+  padding: 2rem 1.35rem;
+  background:
+    linear-gradient(160deg, rgba(247, 219, 33, 0.3) 0%, rgba(247, 219, 33, 0.02) 38%),
+    linear-gradient(180deg, #1a1a1a 0%, #101010 100%);
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand-logo-wrap {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8f2 100%);
+  border: 1px solid rgba(247, 219, 33, 0.36);
+  border-radius: 14px;
+  padding: 0.65rem;
+  margin-bottom: 1.1rem;
+  max-width: 300px;
+}
+
+.brand-logo {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.brand-panel h1 {
+  color: var(--brand-yellow-strong);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.brand-panel p {
+  margin-top: 0.65rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.35;
+  font-size: 0.95rem;
+}
+
+form {
+  padding: 2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+form h2 {
+  font-size: 1.55rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-group {
+  margin-bottom: 0.95rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.62rem 0.7rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #fcfcfa;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input:focus {
+    border-color: #a69000;
+    box-shadow: 0 0 0 3px rgba(247, 219, 33, 0.25);
+    outline: none;
+  }
+
+  small {
+    color: var(--danger);
+    font-size: 0.78rem;
+    margin-top: 0.35rem;
+    display: inline-block;
+  }
+}
+
+.error {
+  margin-bottom: 1rem;
+  color: var(--danger);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+button {
+  width: 100%;
+  padding: 0.74rem 0.8rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #181818 0%, #2a2a2a 100%);
+  color: #fff;
+  font-size: 0.93rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  box-shadow: 0 12px 20px rgba(17, 17, 17, 0.3);
+}
+
+button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+@media (max-width: 860px) {
+  .login-card {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel {
+    padding: 1.4rem 1.2rem;
+  }
+}

@@ -1,0 +1,51 @@
+<div class="login-shell">
+  <div class="login-card">
+    <section class="brand-panel">
+      <div class="brand-logo-wrap">
+        <img
+          class="brand-logo"
+          src="/brand/logo-moliequipos.png"
+          alt="Logo Moliequipos"
+        />
+      </div>
+      <h1>Gestion interna</h1>
+      <p>Plataforma interna para gestionar personal y documentos.</p>
+    </section>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <h2>Iniciar sesion</h2>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="admin@moliequipos.com"
+        />
+        <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          Email invalido
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Contrasena</label>
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="********"
+        />
+        <small *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+          La contrasena es obligatoria
+        </small>
+      </div>
+
+      <div class="error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Ingresar al panel' }}
+      </button>
+    </form>
+  </div>
+</div>

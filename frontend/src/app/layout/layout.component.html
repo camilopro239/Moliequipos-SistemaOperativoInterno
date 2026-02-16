@@ -1,0 +1,139 @@
+﻿<div class="layout">
+  <aside class="sidebar">
+    <div class="brand-lockup">
+      <img
+        class="brand-logo"
+        src="/brand/logo-moliequipos.png"
+        alt="Logo Moliequipos"
+      />
+    </div>
+
+    <nav class="menu">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="menu-index">01</span>
+        Dashboard
+      </a>
+
+      <a *ngIf="puedeVerEmpleados" routerLink="/empleados" routerLinkActive="active">
+        <span class="menu-index">{{ indiceEmpleados }}</span>
+        Empleados
+      </a>
+
+      <a *ngIf="puedeGestionarUsuarios" routerLink="/usuarios" routerLinkActive="active">
+        <span class="menu-index">{{ indiceUsuarios }}</span>
+        Usuarios
+      </a>
+
+      <a routerLink="/documentos" routerLinkActive="active">
+        <span class="menu-index">{{ indiceDocumentos }}</span>
+        Documentos
+      </a>
+
+      <a *ngIf="puedeVerAuditoria" routerLink="/auditoria-descargas" routerLinkActive="active">
+        <span class="menu-index">{{ indiceAuditoria }}</span>
+        Auditoria
+      </a>
+    </nav>
+
+    <p class="sidebar-note">Panel interno de gestion operativa</p>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <div class="header-copy">
+        <strong>Panel de control</strong>
+        <span>Gestion de empleados y documentos</span>
+      </div>
+
+      <div class="header-actions">
+        <span class="user">
+          {{ usuarioNombre }}
+          <small>({{ rolLabel }})</small>
+        </span>
+        <button class="logout" (click)="logout()">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="dashboard">
+        <div class="dashboard-head">
+          <div>
+            <h2>Resumen operativo</h2>
+            <p>Vista rapida de actividad, documentos y control de acceso.</p>
+          </div>
+
+          <button class="btn-refresh" (click)="cargarDashboard()" [disabled]="dashboardLoading">
+            {{ dashboardLoading ? 'Actualizando...' : 'Actualizar' }}
+          </button>
+        </div>
+
+        <div class="metrics-grid">
+          <article class="metric-card metric-card-main">
+            <span class="metric-label">Documentos visibles</span>
+            <strong>{{ totalDocumentosVisibles }}</strong>
+          </article>
+
+          <article class="metric-card">
+            <span class="metric-label">Colillas visibles</span>
+            <strong>{{ totalColillasVisibles }}</strong>
+          </article>
+
+          <article class="metric-card" *ngIf="puedeVerEmpleados">
+            <span class="metric-label">Empleados</span>
+            <strong>{{ totalEmpleados }}</strong>
+          </article>
+
+          <article class="metric-card" *ngIf="puedeGestionarUsuarios">
+            <span class="metric-label">Usuarios</span>
+            <strong>{{ totalUsuarios }}</strong>
+          </article>
+
+          <article class="metric-card" *ngIf="puedeVerAuditoria">
+            <span class="metric-label">Descargas recientes</span>
+            <strong>{{ totalDescargasRecientes }}</strong>
+          </article>
+        </div>
+
+        <div class="quick-links">
+          <a routerLink="/documentos">Ir a documentos</a>
+          <a *ngIf="puedeVerEmpleados" routerLink="/empleados">Ir a empleados</a>
+          <a *ngIf="puedeGestionarUsuarios" routerLink="/usuarios">Gestionar usuarios</a>
+          <a *ngIf="puedeVerAuditoria" routerLink="/auditoria-descargas">Ver auditoria</a>
+        </div>
+
+        <div class="dashboard-panels">
+          <article class="panel-card">
+            <h3>Ultimos documentos</h3>
+            <p *ngIf="dashboardLoading">Cargando...</p>
+            <ul *ngIf="!dashboardLoading && documentosRecientes.length">
+              <li *ngFor="let doc of documentosRecientes">
+                <strong>{{ doc.nombre_archivo }}</strong>
+                <span>{{ doc.empleado_nombre }} - {{ doc.tipo }}</span>
+              </li>
+            </ul>
+            <p *ngIf="!dashboardLoading && !documentosRecientes.length">
+              No hay documentos para mostrar.
+            </p>
+          </article>
+
+          <article class="panel-card">
+            <h3>Actividad de descargas</h3>
+            <p *ngIf="!puedeVerAuditoria">Disponible para admin, rrhh y gerente.</p>
+            <p *ngIf="puedeVerAuditoria && dashboardLoading">Cargando...</p>
+            <ul *ngIf="puedeVerAuditoria && !dashboardLoading && descargasRecientes.length">
+              <li *ngFor="let item of descargasRecientes">
+                <strong>{{ item.usuario_nombre }}</strong>
+                <span>{{ item.nombre_archivo }} - {{ item.fecha_descarga | date:'short' }}</span>
+              </li>
+            </ul>
+            <p *ngIf="puedeVerAuditoria && !dashboardLoading && !descargasRecientes.length">
+              No hay descargas registradas recientemente.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

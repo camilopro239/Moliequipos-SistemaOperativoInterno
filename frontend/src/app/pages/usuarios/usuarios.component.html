@@ -1,0 +1,189 @@
+﻿<div class="page">
+  <div class="page-header">
+    <div class="page-header-left">
+      <button type="button" class="btn-retorno" (click)="retornar()">
+        Retornar
+      </button>
+      <h2>Gestion de usuarios</h2>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Crear usuario</h3>
+
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="crearUsuario()">
+      <div class="field">
+        <label>Empleado</label>
+        <select formControlName="empleado_id">
+          <option [ngValue]="null" disabled>Selecciona un empleado</option>
+          <option *ngFor="let emp of empleadosDisponibles" [ngValue]="emp.id">
+            {{ emp.nombre }} - {{ emp.cedula }}
+          </option>
+        </select>
+        <small *ngIf="!empleadosDisponibles.length">
+          No hay empleados disponibles para vincular.
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Email de acceso</label>
+        <input type="email" formControlName="email" placeholder="usuario@empresa.com" />
+      </div>
+
+      <div class="field">
+        <label>Contrasena</label>
+        <input type="password" formControlName="password" placeholder="Minimo 6 caracteres" />
+      </div>
+
+      <div class="field">
+        <label>Rol</label>
+        <select formControlName="rol">
+          <option value="admin">admin</option>
+          <option value="gerente">gerente</option>
+          <option value="rrhh">rrhh</option>
+          <option value="operador_patio">operador_patio</option>
+          <option value="operador">operador</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="submit" [disabled]="guardando || form.invalid || !empleadosDisponibles.length">
+          {{ guardando ? 'Guardando...' : 'Crear usuario' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>Usuarios registrados</h3>
+
+    <p *ngIf="loading">Cargando usuarios...</p>
+
+    <div class="table-wrapper" *ngIf="!loading && usuarios.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Empleado vinculado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of usuarios">
+            <td>{{ user.nombre }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <select
+                class="role-select"
+                [(ngModel)]="rolEditadoPorUsuario[user.id]"
+                [ngModelOptions]="{ standalone: true }"
+              >
+                <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{ rol }}</option>
+              </select>
+            </td>
+            <td>{{ user.empleado_nombre || '-' }} {{ user.empleado_cedula ? '(' + user.empleado_cedula + ')' : '' }}</td>
+            <td class="acciones-grid">
+              <button
+                type="button"
+                class="secondary"
+                (click)="actualizarRol(user)"
+                [disabled]="actualizandoRolId === user.id"
+              >
+                {{ actualizandoRolId === user.id ? 'Guardando rol...' : 'Guardar rol' }}
+              </button>
+
+              <button
+                type="button"
+                class="btn-reset"
+                (click)="abrirModalResetPassword(user)"
+                [disabled]="reseteandoPasswordId === user.id"
+              >
+                {{ reseteandoPasswordId === user.id ? 'Reseteando...' : 'Reset password' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p *ngIf="!loading && !usuarios.length">No hay usuarios registrados.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="modalResetAbierto">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="resetPasswordTitle">
+    <h4 id="resetPasswordTitle">Resetear contrasena</h4>
+    <p class="modal-user">
+      Usuario: <strong>{{ usuarioResetObjetivo?.nombre }}</strong>
+      <span *ngIf="usuarioResetObjetivo?.email">({{ usuarioResetObjetivo?.email }})</span>
+    </p>
+
+    <form [formGroup]="resetForm" (ngSubmit)="confirmarResetPassword()" class="modal-form">
+      <div class="field">
+        <label>Nueva contrasena</label>
+        <div class="password-input">
+          <input
+            [type]="mostrarPasswordReset ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Minimo 6 caracteres"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleMostrarPasswordReset()"
+            [disabled]="reseteandoPasswordId !== null"
+          >
+            {{ mostrarPasswordReset ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+        <small class="error" *ngIf="resetForm.controls.password.touched && resetForm.controls.password.invalid">
+          Debe tener minimo 6 caracteres.
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Confirmar contrasena</label>
+        <div class="password-input">
+          <input
+            [type]="mostrarConfirmPasswordReset ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            placeholder="Repite la contrasena"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleMostrarConfirmPasswordReset()"
+            [disabled]="reseteandoPasswordId !== null"
+          >
+            {{ mostrarConfirmPasswordReset ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+        <small class="error" *ngIf="passwordsNoCoinciden">
+          Las contrasenas no coinciden.
+        </small>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="secondary"
+          (click)="cerrarModalResetPassword()"
+          [disabled]="reseteandoPasswordId !== null"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn-reset"
+          [disabled]="reseteandoPasswordId !== null"
+        >
+          {{ reseteandoPasswordId !== null ? 'Reseteando...' : 'Confirmar reset' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+﻿# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+
+# Frontend artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Backend runtime artifacts
+backend/uploads/
+backend/*.log
+backend/.env
+
+# Misc
+*.tmp
+*.bak

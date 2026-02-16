@@ -1,0 +1,73 @@
+.toast-wrapper {
+  position: fixed;
+  top: 18px;
+  right: 16px;
+  z-index: 2200;
+}
+
+.toast {
+  min-width: 280px;
+  max-width: 360px;
+  padding: 11px 14px;
+  border-radius: 11px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  box-shadow: 0 14px 30px rgba(17, 17, 17, 0.2);
+  animation: slideIn 0.26s ease, fadeOut 0.26s ease 2.72s forwards;
+
+  &.success {
+    background: #edfdf4;
+    border-color: #7fe0ae;
+    color: #0f6e3f;
+  }
+
+  &.error {
+    background: #fff2f1;
+    border-color: #ff9d98;
+    color: #b11f1f;
+  }
+
+  &.warning {
+    background: #fffbe7;
+    border-color: #f0db67;
+    color: #766004;
+  }
+
+  &.info {
+    background: #f4f4f4;
+    border-color: #d6d6d6;
+    color: #303030;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(115%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(115%);
+  }
+}
+
+@media (max-width: 640px) {
+  .toast-wrapper {
+    right: 10px;
+    left: 10px;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
