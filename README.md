@@ -49,7 +49,17 @@ backend/
   uploads/
 frontend/
   src/app/
+docs/
 ```
+
+## Documentacion detallada
+
+Para revisar el sistema completo de forma tecnica y ordenada:
+
+- `docs/00-indice-documentacion.md`
+- `docs/01-backend-detallado.md`
+- `docs/02-frontend-detallado.md`
+- `docs/03-base-datos-y-permisos.md`
 
 ## Configuracion local
 
