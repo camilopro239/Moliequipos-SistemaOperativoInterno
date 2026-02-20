@@ -1,4 +1,4 @@
 <?php
-$_pas = password_hash('123', PASSWORD_BCRYPT);
+$_pas = password_hash('123456', PASSWORD_BCRYPT);
 
 echo $_pas;
