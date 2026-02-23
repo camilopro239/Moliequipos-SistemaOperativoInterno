@@ -12,6 +12,10 @@ class AuthMiddleware
             exit;
         }
 
+        if (!JWT::isConfigured()) {
+            Response::json(['error' => 'Configuracion JWT incompleta en el servidor'], 500);
+        }
+
         $authHeader = null;
 
         // 1️⃣ Intento estándar

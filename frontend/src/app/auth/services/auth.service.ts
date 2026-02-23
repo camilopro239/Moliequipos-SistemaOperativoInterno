@@ -1,27 +1,23 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable, tap } from 'rxjs';
+import { tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+  private API_URL = `${environment.apiBaseUrl}/auth`;
 
-  // ✅ BASE URL REAL DEL BACKEND (php -S)
-  private API_URL = 'http://localhost:8000/auth';
-
- login(email: string, password: string) {
-  return this.http.post<any>(`${this.API_URL}/login`, { email, password })
-    .pipe(
-      tap(res => {
+  login(email: string, password: string) {
+    return this.http.post<any>(`${this.API_URL}/login`, { email, password }).pipe(
+      tap((res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res.user));
       })
     );
-}
-
+  }
 
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -30,7 +26,10 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    if (!isPlatformBrowser(this.platformId)) return false;
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
     return !!localStorage.getItem('token');
   }
 }

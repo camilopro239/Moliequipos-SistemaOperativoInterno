@@ -21,17 +21,17 @@ class EmpleadosController
         switch ($method) {
 
             case 'GET':
-                AuthMiddleware::check(['admin', 'rrhh']);
+                AuthMiddleware::check(['admin', 'gerente', 'propietario', 'recursos_humanos']);
                 self::listar();
                 break;
 
             case 'POST':
-                AuthMiddleware::check(['admin']);
+                AuthMiddleware::check(['admin', 'propietario', 'gerente', 'recursos_humanos']);
                 self::crear();
                 break;
 
             case 'PUT':
-                AuthMiddleware::check(['admin', 'rrhh']);
+                AuthMiddleware::check(['admin', 'propietario', 'gerente', 'recursos_humanos']);
                 if (!isset($parts[1])) {
                     Response::json(['error' => 'ID requerido'], 400);
                 }

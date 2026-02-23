@@ -16,7 +16,7 @@ class DocumentosController
 {
     private static array $tiposPermitidos = ['contrato', 'incapacidad', 'colilla', 'otro'];
     private static array $extensionesPermitidas = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx'];
-    private static array $rolesPrivilegiados = ['admin', 'rrhh', 'gerente'];
+    private static array $rolesPrivilegiados = ['admin', 'propietario', 'gerente', 'recursos_humanos'];
 
     public static function handle($method, $parts)
     {

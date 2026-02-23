@@ -57,7 +57,8 @@ Archivo: `backend/config/db.php`
 
 Observacion:
 
-- El archivo hoy contiene credenciales locales directas, correcto para entorno local. Para produccion conviene mover estas variables a entorno.
+- El archivo lee configuracion desde `backend/.env` por medio de `backend/config/env.php`.
+- Variables esperadas: `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`, `APP_ENV`.
 
 ## 4. Helpers y seguridad
 
@@ -77,7 +78,7 @@ Es el punto unico de salida JSON.
 
 Clase `JWT`:
 
-- Usa firma HMAC SHA256 con secreto interno.
+- Usa firma HMAC SHA256 con secreto leido desde `JWT_SECRET` en entorno.
 - `generate(array $payload, int $expSeconds = 3600): string`
   - Construye header JWT.
   - Agrega expiracion (`exp`) al payload.
@@ -399,7 +400,7 @@ Usuarios:
 ## 10. Riesgos tecnicos actuales (con enfoque didactico)
 
 - CORS esta fijo a localhost y no usa variables de entorno.
-- Secreto JWT esta hardcoded.
+- Si falta `JWT_SECRET`, backend rechaza login y validacion de token.
 - No hay paginacion backend en listados masivos.
 - No hay rate limiting.
 - Existe algo de texto con codificacion rota en comentarios o mensajes (problema de encoding), no afecta logica pero si mantenimiento.

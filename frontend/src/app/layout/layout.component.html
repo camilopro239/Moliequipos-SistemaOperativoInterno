@@ -3,7 +3,7 @@
     <div class="brand-lockup">
       <img
         class="brand-logo"
-        src="/brand/logo-moliequipos.png"
+        src="brand/logo-moliequipos.png"
         alt="Logo Moliequipos"
       />
     </div>
@@ -41,8 +41,10 @@
   <div class="main">
     <header class="header">
       <div class="header-copy">
-        <strong>Panel de control</strong>
-        <span>Gestion de empleados y documentos</span>
+        <strong>{{ esPrivilegiado ? 'Panel de control' : 'Portal de colillas' }}</strong>
+        <span>
+          {{ esPrivilegiado ? 'Gestion de empleados y documentos' : 'Consulta y descarga de colillas de pago' }}
+        </span>
       </div>
 
       <div class="header-actions">
@@ -55,7 +57,7 @@
     </header>
 
     <main class="content">
-      <section class="dashboard">
+      <section class="dashboard" *ngIf="esPrivilegiado; else vistaColaborador">
         <div class="dashboard-head">
           <div>
             <h2>Resumen operativo</h2>
@@ -118,7 +120,7 @@
 
           <article class="panel-card">
             <h3>Actividad de descargas</h3>
-            <p *ngIf="!puedeVerAuditoria">Disponible para admin, rrhh y gerente.</p>
+            <p *ngIf="!puedeVerAuditoria">Disponible para roles privilegiados.</p>
             <p *ngIf="puedeVerAuditoria && dashboardLoading">Cargando...</p>
             <ul *ngIf="puedeVerAuditoria && !dashboardLoading && descargasRecientes.length">
               <li *ngFor="let item of descargasRecientes">
@@ -132,6 +134,36 @@
           </article>
         </div>
       </section>
+
+      <ng-template #vistaColaborador>
+        <section class="employee-home">
+          <div class="employee-home-head">
+            <h2>Bienvenido, {{ usuarioNombre }}</h2>
+            <p>
+              Tu perfil tiene acceso a tus documentos de pago. Usa este panel para entrar rapido al modulo de
+              documentos y descargar tus colillas.
+            </p>
+          </div>
+
+          <div class="employee-cards">
+            <article class="employee-card employee-card-main">
+              <span class="employee-card-label">Permisos de tu rol</span>
+              <strong>Consulta personal</strong>
+              <p>Solo puedes ver y descargar colillas asociadas a tu usuario.</p>
+            </article>
+
+            <article class="employee-card">
+              <span class="employee-card-label">Sugerencia</span>
+              <strong>Revisa periodo y nombre del archivo</strong>
+              <p>Antes de descargar, valida que corresponda al mes y documento correcto.</p>
+            </article>
+          </div>
+
+          <div class="quick-links">
+            <a routerLink="/documentos">Ver mis colillas</a>
+          </div>
+        </section>
+      </ng-template>
 
       <router-outlet></router-outlet>
     </main>

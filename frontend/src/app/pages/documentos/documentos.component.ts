@@ -69,7 +69,12 @@ export class DocumentosComponent implements OnInit {
     try {
       const user = JSON.parse(userRaw);
       const rol = (user?.rol || '').toLowerCase();
-      this.esPrivilegiado = ['admin', 'rrhh', 'gerente'].includes(rol);
+      this.esPrivilegiado = [
+        'admin',
+        'gerente',
+        'propietario',
+        'recursos_humanos',
+      ].includes(rol);
     } catch {
       this.esPrivilegiado = false;
     }
@@ -118,7 +123,8 @@ export class DocumentosComponent implements OnInit {
 
   onArchivoSeleccionado(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.archivoSeleccionado = input.files && input.files.length ? input.files[0] : null;
+    this.archivoSeleccionado =
+      input.files && input.files.length ? input.files[0] : null;
   }
 
   subirDocumento() {
@@ -181,7 +187,9 @@ export class DocumentosComponent implements OnInit {
         URL.revokeObjectURL(blobUrl);
       },
       error: (err) => {
-        this.toast.error(err?.error?.error || 'No se pudo descargar el documento');
+        this.toast.error(
+          err?.error?.error || 'No se pudo descargar el documento',
+        );
       },
     });
   }
@@ -201,7 +209,9 @@ export class DocumentosComponent implements OnInit {
         this.cargarDocumentos();
       },
       error: (err) => {
-        this.toast.error(err?.error?.error || 'No se pudo eliminar el documento');
+        this.toast.error(
+          err?.error?.error || 'No se pudo eliminar el documento',
+        );
       },
     });
   }

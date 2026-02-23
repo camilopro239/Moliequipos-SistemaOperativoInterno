@@ -6,36 +6,44 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./auth/pages/login/login.component').then((m) => m.LoginComponent),
+      import('./auth/pages/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
   },
 
   {
     path: 'empleados',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh'] },
+    data: { roles: ['admin', 'gerente', 'propietario', 'recursos_humanos'] },
     loadComponent: () =>
-      import('./pages/empleados/empleados.component').then((m) => m.EmpleadosComponent),
+      import('./pages/empleados/empleados.component').then(
+        (m) => m.EmpleadosComponent,
+      ),
   },
 
   {
     path: 'documentos',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pages/documentos/documentos.component').then((m) => m.DocumentosComponent),
+      import('./pages/documentos/documentos.component').then(
+        (m) => m.DocumentosComponent,
+      ),
   },
 
   {
     path: 'usuarios',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'gerente'] },
+    data: { roles: ['admin', 'gerente', 'propietario', 'recursos_humanos'] },
     loadComponent: () =>
-      import('./pages/usuarios/usuarios.component').then((m) => m.UsuariosComponent),
+      import('./pages/usuarios/usuarios.component').then(
+        (m) => m.UsuariosComponent,
+      ),
   },
 
   {
     path: 'auditoria-descargas',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh', 'gerente'] },
+    data: { roles: ['admin', 'gerente', 'propietario', 'recursos_humanos'] },
     loadComponent: () =>
       import('./pages/auditoria-descargas/auditoria-descargas.component').then(
         (m) => m.AuditoriaDescargasComponent,
@@ -45,6 +53,7 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [authGuard],
-    loadComponent: () => import('./layout/layout.component').then((m) => m.LayoutComponent),
+    loadComponent: () =>
+      import('./layout/layout.component').then((m) => m.LayoutComponent),
   },
 ];

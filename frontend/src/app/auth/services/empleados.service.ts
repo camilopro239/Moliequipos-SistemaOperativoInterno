@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class EmpleadosService {
 
   private http = inject(HttpClient);
-  private API_URL = 'http://localhost:8000/empleados';
+  private API_URL = `${environment.apiBaseUrl}/empleados`;
 
   getEmpleados(): Observable<any[]> {
   return this.http.get<any[]>(this.API_URL);

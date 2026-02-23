@@ -14,9 +14,19 @@ require_once __DIR__ . '/../helpers/AuthMiddleware.php';
 
 class UsuariosController
 {
+    private static array $rolesPermitidos = [
+        'admin',
+        'gerente',
+        'propietario',
+        'recursos_humanos',
+        'supervisor_patio',
+        'moledor_pasta',
+        'auxiliar_patio',
+    ];
+
     public static function handle(string $method, array $parts): void
     {
-        AuthMiddleware::check(['admin', 'gerente']);
+        AuthMiddleware::check(['admin', 'gerente', 'propietario', 'recursos_humanos']);
 
         self::asegurarEsquemaUsuarios();
 
@@ -130,11 +140,14 @@ class UsuariosController
         }
 
         if (strlen($password) < 6) {
-            Response::json(['error' => 'La contrasena debe tener al menos 6 caracteres'], 400);
+            Response::json(['error' => 'La contraseña debe tener al menos 6 caracteres'], 400);
         }
 
         if (!self::rolEsValido($rol)) {
-            Response::json(['error' => 'El rol solo permite letras minusculas, numeros y guion bajo'], 400);
+            Response::json([
+                'error' => 'Rol invalido',
+                'roles_permitidos' => self::$rolesPermitidos
+            ], 400);
         }
 
         $stmtEmpleado = $pdo->prepare("
@@ -208,7 +221,10 @@ class UsuariosController
         }
 
         if (!self::rolEsValido($rol)) {
-            Response::json(['error' => 'Rol invalido'], 400);
+            Response::json([
+                'error' => 'Rol invalido',
+                'roles_permitidos' => self::$rolesPermitidos
+            ], 400);
         }
 
         $stmtUser = $pdo->prepare("SELECT id, rol FROM usuarios WHERE id = ? LIMIT 1");
@@ -269,6 +285,6 @@ class UsuariosController
 
     private static function rolEsValido(string $rol): bool
     {
-        return (bool) preg_match('/^[a-z0-9_]+$/', $rol);
+        return in_array($rol, self::$rolesPermitidos, true);
     }
 }

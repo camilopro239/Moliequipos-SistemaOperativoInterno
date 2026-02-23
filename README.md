@@ -72,7 +72,16 @@ Crear la base de datos `chatarreria` y ejecutar los scripts necesarios (segun tu
 
 ### 2) Backend
 
-Configura conexion en `backend/config/db.php`.
+Configura entorno en `backend/.env` (puedes partir de `backend/.env.example`):
+
+```env
+APP_ENV=local
+DB_HOST=127.0.0.1
+DB_NAME=chatarreria
+DB_USER=root
+DB_PASS=
+JWT_SECRET=tu_clave_larga_y_aleatoria
+```
 
 Iniciar servidor PHP desde la carpeta `backend`:
 
@@ -82,6 +91,11 @@ php -S localhost:8000
 
 ### 3) Frontend
 
+Configura URL base de API en:
+
+- `frontend/src/environments/environment.ts` (desarrollo)
+- `frontend/src/environments/environment.prod.ts` (produccion)
+
 Desde `frontend`:
 
 ```bash
@@ -90,6 +104,17 @@ npm run start
 ```
 
 Aplicacion en: `http://localhost:4200`
+
+### 4) Build para GitHub Pages
+
+Si publicas el frontend en GitHub Pages (project page), usa:
+
+```bash
+cd frontend
+npm run build:gh
+```
+
+Ese script genera el build con `base-href` y `deploy-url` del repo para que los assets (por ejemplo logos) carguen correctamente en produccion.
 
 ## Endpoints principales
 

@@ -32,6 +32,10 @@ class AuthController {
     private static function login(): void {
         global $pdo;
 
+        if (!JWT::isConfigured()) {
+            Response::json(['error' => 'Configuracion JWT incompleta en el servidor'], 500);
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
         if (!$data || empty($data['email']) || empty($data['password'])) {
@@ -51,12 +55,16 @@ class AuthController {
             Response::json(['error' => 'Credenciales invalidas'], 401);
         }
 
-        $token = JWT::generate([
-            'id' => (int) $user['id'],
-            'rol' => (string) $user['rol'],
-            'name' => (string) $user['nombre'],
-            'empleado_id' => isset($user['empleado_id']) ? (int) $user['empleado_id'] : null,
-        ]);
+        try {
+            $token = JWT::generate([
+                'id' => (int) $user['id'],
+                'rol' => (string) $user['rol'],
+                'name' => (string) $user['nombre'],
+                'empleado_id' => isset($user['empleado_id']) ? (int) $user['empleado_id'] : null,
+            ]);
+        } catch (Throwable $e) {
+            Response::json(['error' => 'No se pudo generar el token de sesion'], 500);
+        }
 
         Response::json([
             'token' => $token,

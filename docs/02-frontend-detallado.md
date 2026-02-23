@@ -81,9 +81,11 @@ Nota tecnica:
 
 ## 5. Servicios de datos
 
+- Los servicios toman la URL base desde `frontend/src/environments/environment.ts` (y `environment.prod.ts` para build de produccion).
+
 ## 5.1 `auth.service.ts`
 
-- Base URL: `http://localhost:8000/auth`.
+- Base URL: `${environment.apiBaseUrl}/auth`.
 - `login(email, password)`
   - POST a `/auth/login`.
   - Guarda `token` y `user` en `localStorage`.
@@ -94,7 +96,7 @@ Nota tecnica:
 
 ## 5.2 `empleados.service.ts`
 
-- Base URL: `http://localhost:8000/empleados`.
+- Base URL: `${environment.apiBaseUrl}/empleados`.
 - Metodos:
   - `getEmpleados()`
   - `crearEmpleado(data)`
@@ -103,7 +105,7 @@ Nota tecnica:
 
 ## 5.3 `documentos.service.ts`
 
-- Base URL: `http://localhost:8000/documentos`.
+- Base URL: `${environment.apiBaseUrl}/documentos`.
 - Metodos:
   - `getDocumentos(empleadoId?)`
   - `getAuditoriaDescargas(filtros?)`
@@ -113,7 +115,7 @@ Nota tecnica:
 
 ## 5.4 `usuarios.service.ts`
 
-- Base URL: `http://localhost:8000/usuarios`.
+- Base URL: `${environment.apiBaseUrl}/usuarios`.
 - Metodos:
   - `getUsuarios()`
   - `getEmpleadosParaVincular()`

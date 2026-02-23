@@ -22,12 +22,25 @@ export class LayoutComponent implements OnInit {
   private documentosService = inject(DocumentosService);
   private platformId = inject(PLATFORM_ID);
 
-  private rolesEmpleados = ['admin', 'rrhh'];
-  private rolesGestionUsuarios = ['admin', 'gerente'];
-  private rolesAuditoria = ['admin', 'rrhh', 'gerente'];
+  private rolesPrivilegiados = [
+    'admin',
+    'gerente',
+    'propietario',
+    'recursos_humanos',
+  ];
+  private rolesEmpleados = [
+    ...this.rolesPrivilegiados,
+  ];
+  private rolesGestionUsuarios = [
+    ...this.rolesPrivilegiados,
+  ];
+  private rolesAuditoria = [
+    ...this.rolesPrivilegiados,
+  ];
 
   usuarioNombre = 'Usuario';
   usuarioRol = '';
+  esPrivilegiado = false;
 
   dashboardLoading = true;
   totalDocumentosVisibles = 0;
@@ -48,6 +61,7 @@ export class LayoutComponent implements OnInit {
     if (!isPlatformBrowser(this.platformId)) {
       this.usuarioNombre = 'Usuario';
       this.usuarioRol = '';
+      this.esPrivilegiado = false;
       return;
     }
 
@@ -55,6 +69,7 @@ export class LayoutComponent implements OnInit {
     if (!userRaw) {
       this.usuarioNombre = 'Usuario';
       this.usuarioRol = '';
+      this.esPrivilegiado = false;
       return;
     }
 
@@ -62,9 +77,11 @@ export class LayoutComponent implements OnInit {
       const user = JSON.parse(userRaw);
       this.usuarioNombre = String(user?.nombre || user?.email || 'Usuario');
       this.usuarioRol = String(user?.rol || '').toLowerCase();
+      this.esPrivilegiado = this.rolesPrivilegiados.includes(this.usuarioRol);
     } catch {
       this.usuarioNombre = 'Usuario';
       this.usuarioRol = '';
+      this.esPrivilegiado = false;
     }
   }
 
@@ -121,6 +138,12 @@ export class LayoutComponent implements OnInit {
       return;
     }
 
+    if (!this.esPrivilegiado) {
+      this.limpiarDashboard();
+      this.dashboardLoading = false;
+      return;
+    }
+
     this.dashboardLoading = true;
 
     const empleados$ = this.puedeVerEmpleados
@@ -131,7 +154,9 @@ export class LayoutComponent implements OnInit {
       ? this.usuariosService.getUsuarios().pipe(catchError(() => of([])))
       : of([]);
 
-    const documentos$ = this.documentosService.getDocumentos().pipe(catchError(() => of([])));
+    const documentos$ = this.documentosService
+      .getDocumentos()
+      .pipe(catchError(() => of([])));
 
     const auditoria$ = this.puedeVerAuditoria
       ? this.documentosService
@@ -149,7 +174,9 @@ export class LayoutComponent implements OnInit {
       const listaAuditoria = Array.isArray(auditoria) ? auditoria : [];
 
       this.totalDocumentosVisibles = listaDocumentos.length;
-      this.totalColillasVisibles = listaDocumentos.filter((doc) => doc?.tipo === 'colilla').length;
+      this.totalColillasVisibles = listaDocumentos.filter(
+        (doc) => doc?.tipo === 'colilla',
+      ).length;
       this.totalEmpleados = Array.isArray(empleados) ? empleados.length : 0;
       this.totalUsuarios = Array.isArray(usuarios) ? usuarios.length : 0;
       this.totalDescargasRecientes = listaAuditoria.length;
@@ -159,6 +186,16 @@ export class LayoutComponent implements OnInit {
 
       this.dashboardLoading = false;
     });
+  }
+
+  private limpiarDashboard(): void {
+    this.totalDocumentosVisibles = 0;
+    this.totalColillasVisibles = 0;
+    this.totalEmpleados = 0;
+    this.totalUsuarios = 0;
+    this.totalDescargasRecientes = 0;
+    this.documentosRecientes = [];
+    this.descargasRecientes = [];
   }
 
   logout(): void {

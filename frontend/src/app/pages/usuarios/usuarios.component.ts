@@ -30,7 +30,16 @@ export class UsuariosComponent implements OnInit {
   empleados: any[] = [];
   usuarios: any[] = [];
 
-  rolesDisponibles = ['admin', 'gerente', 'rrhh', 'operador_patio', 'operador'];
+  rolesDisponibles: Array<{ value: string; label: string }> = [
+    { value: 'admin', label: 'Admin' },
+    { value: 'gerente', label: 'Gerente' },
+    { value: 'propietario', label: 'Propietario' },
+    { value: 'recursos_humanos', label: 'Recursos Humanos' },
+    { value: 'supervisor_patio', label: 'Supervisor de Patio' },
+    { value: 'moledor_pasta', label: 'Moledor de Pasta' },
+    { value: 'auxiliar_patio', label: 'Auxiliar de Patio' },
+  ];
+
   rolEditadoPorUsuario: Record<number, string> = {};
 
   modalResetAbierto = false;
@@ -42,7 +51,7 @@ export class UsuariosComponent implements OnInit {
     empleado_id: [null as number | null, Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    rol: ['operador_patio', Validators.required],
+    rol: ['auxiliar_patio', Validators.required],
   });
 
   resetForm = this.fb.group({
@@ -94,13 +103,17 @@ export class UsuariosComponent implements OnInit {
           },
           error: (err) => {
             this.loading = false;
-            this.toast.error(err?.error?.error || 'No se pudo cargar la lista de usuarios');
+            this.toast.error(
+              err?.error?.error || 'No se pudo cargar la lista de usuarios',
+            );
           },
         });
       },
       error: (err) => {
         this.loading = false;
-        this.toast.error(err?.error?.error || 'No se pudo cargar la lista de empleados');
+        this.toast.error(
+          err?.error?.error || 'No se pudo cargar la lista de empleados',
+        );
       },
     });
   }
@@ -128,7 +141,7 @@ export class UsuariosComponent implements OnInit {
           empleado_id: null,
           email: '',
           password: '',
-          rol: 'operador_patio',
+          rol: 'auxiliar_patio',
         });
         this.cargarDatos();
       },
@@ -140,7 +153,9 @@ export class UsuariosComponent implements OnInit {
   }
 
   actualizarRol(user: any) {
-    const nuevoRol = String(this.rolEditadoPorUsuario[user.id] || '').trim().toLowerCase();
+    const nuevoRol = String(this.rolEditadoPorUsuario[user.id] || '')
+      .trim()
+      .toLowerCase();
     if (!nuevoRol) {
       this.toast.warning('Debes seleccionar un rol valido');
       return;
@@ -204,7 +219,9 @@ export class UsuariosComponent implements OnInit {
     }
 
     const password = String(this.resetForm.value.password || '').trim();
-    const confirmPassword = String(this.resetForm.value.confirmPassword || '').trim();
+    const confirmPassword = String(
+      this.resetForm.value.confirmPassword || '',
+    ).trim();
 
     if (password !== confirmPassword) {
       this.toast.warning('Las contrasenas no coinciden');
@@ -212,16 +229,20 @@ export class UsuariosComponent implements OnInit {
     }
 
     this.reseteandoPasswordId = this.usuarioResetObjetivo.id;
-    this.usuariosService.resetPassword(this.usuarioResetObjetivo.id, password).subscribe({
-      next: () => {
-        this.reseteandoPasswordId = null;
-        this.toast.success('Contrasena restablecida correctamente');
-        this.cerrarModalResetPassword();
-      },
-      error: (err) => {
-        this.reseteandoPasswordId = null;
-        this.toast.error(err?.error?.error || 'No se pudo restablecer la contrasena');
-      },
-    });
+    this.usuariosService
+      .resetPassword(this.usuarioResetObjetivo.id, password)
+      .subscribe({
+        next: () => {
+          this.reseteandoPasswordId = null;
+          this.toast.success('Contrasena restablecida correctamente');
+          this.cerrarModalResetPassword();
+        },
+        error: (err) => {
+          this.reseteandoPasswordId = null;
+          this.toast.error(
+            err?.error?.error || 'No se pudo restablecer la contrasena',
+          );
+        },
+      });
   }
 }

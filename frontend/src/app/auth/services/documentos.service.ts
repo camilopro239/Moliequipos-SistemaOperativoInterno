@@ -1,16 +1,18 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentosService {
   private http = inject(HttpClient);
-  private API_URL = 'http://localhost:8000/documentos';
+  private API_URL = `${environment.apiBaseUrl}/documentos`;
 
   getDocumentos(empleadoId?: number | null): Observable<any[]> {
     if (empleadoId && empleadoId > 0) {
       return this.http.get<any[]>(`${this.API_URL}?empleado_id=${empleadoId}`);
     }
+
     return this.http.get<any[]>(this.API_URL);
   }
 

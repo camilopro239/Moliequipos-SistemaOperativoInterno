@@ -38,11 +38,9 @@
       <div class="field">
         <label>Rol</label>
         <select formControlName="rol">
-          <option value="admin">admin</option>
-          <option value="gerente">gerente</option>
-          <option value="rrhh">rrhh</option>
-          <option value="operador_patio">operador_patio</option>
-          <option value="operador">operador</option>
+          <option *ngFor="let rol of rolesDisponibles" [value]="rol.value">
+            {{ rol.label }}
+          </option>
         </select>
       </div>
 
@@ -81,7 +79,9 @@
                 [(ngModel)]="rolEditadoPorUsuario[user.id]"
                 [ngModelOptions]="{ standalone: true }"
               >
-                <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{ rol }}</option>
+                <option *ngFor="let rol of rolesDisponibles" [value]="rol.value">
+                  {{ rol.label }}
+                </option>
               </select>
             </td>
             <td>{{ user.empleado_nombre || '-' }} {{ user.empleado_cedula ? '(' + user.empleado_cedula + ')' : '' }}</td>

@@ -49,7 +49,9 @@ export class EmpleadosComponent implements OnInit {
       nombre: ['', Validators.required],
       cedula: ['', Validators.required],
       cargo: [''],
+      telefono: [''],
       correo: ['', [Validators.required, Validators.email]],
+      fecha_ingreso: [''],
       estado: ['activo', Validators.required],
     });
 
@@ -157,7 +159,7 @@ export class EmpleadosComponent implements OnInit {
   openModalCrear() {
     this.modoEdicion = false;
     this.empleadoEditando = null;
-    this.form.reset({ estado: 'activo' });
+    this.form.reset({ telefono: '', fecha_ingreso: '', estado: 'activo' });
     this.showModal = true;
   }
 
@@ -172,7 +174,7 @@ export class EmpleadosComponent implements OnInit {
     this.showModal = false;
     this.modoEdicion = false;
     this.empleadoEditando = null;
-    this.form.reset({ estado: 'activo' });
+    this.form.reset({ telefono: '', fecha_ingreso: '', estado: 'activo' });
   }
 
   // =========================
